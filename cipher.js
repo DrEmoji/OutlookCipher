@@ -1,6 +1,13 @@
 function encrypt(r, t, e) {
-    if (o = PackageNewPwdOnly(r), null == o || "undefined" == typeof o) return o;
-    if (void 0 !== e && void 0 !== parseRSAKeyFromString) var a = parseRSAKeyFromString(e);
+    //console.log("r:", r);
+    //console.log("t:", t);
+    //console.log("e:", e);
+    o = PackageNewPwdOnly(r)
+    //console.log("o:", o);
+    //if (o = PackageNewPwdOnly(r), null == o || "undefined" == typeof o) return o;
+    var a = parseRSAKeyFromString(e)
+    //console.log("a:", a);
+    //if (void 0 !== e && void 0 !== parseRSAKeyFromString) var a = parseRSAKeyFromString(e);
     return RSAEncrypt(o, a, t)
 }
 
@@ -18,10 +25,10 @@ function PackageNewPwdOnly(e) {
 function RSAEncrypt(e, t) {
     for (var n = [], a = 42, o = 2 * t.n.size - a, i = 0; i < e.length; i += o) {
         if (i + o >= e.length) {
-            var r = RSAEncryptBlock(e.slice(i), t, randomNum);
+            var r = RSAEncryptBlock(e.slice(i), t, t);
             r && (n = r.concat(n))
         } else {
-            var r = RSAEncryptBlock(e.slice(i, i + o), t, randomNum);
+            var r = RSAEncryptBlock(e.slice(i, i + o), t, t);
             r && (n = r.concat(n))
         }
     }
@@ -45,21 +52,30 @@ function RSAEncryptBlock(e, t, n) {
     return c = c.reverse()
 }
 
-function parseRSAKeyFromString(e) {
+function parseRSAKeyFromString(e) { 
+    //console.log("\nparseRSAKeyFromString\n")
+    //console.log("e:", e);
     var t = e.indexOf(";");
+    //console.log("t:", t);
+    /*
     if (0 > t) {
         return null
     }
+    */
     var n = e.substr(0, t),
         a = e.substr(t + 1),
         o = n.indexOf("=");
+    /*
     if (0 > o) {
         return null
     }
+    */
     var i = n.substr(o + 1);
+    /*
     if (o = a.indexOf("="), 0 > o) {
         return null
     }
+    */
     var r = a.substr(o + 1),
         s = new Object;
     return s.n = hexStringToMP(r), s.e = parseInt(i, 16), s
@@ -359,4 +375,8 @@ function base64Encode(e, t) {
         a = mapByteToBase64(63 & e) + a, e >>= 6
     }
     return a
+}
+
+function mapByteToBase64(e) {
+    return e >= 0 && 26 > e ? String.fromCharCode(65 + e) : e >= 26 && 52 > e ? String.fromCharCode(97 + e - 26) : e >= 52 && 62 > e ? String.fromCharCode(48 + e - 52) : 62 == e ? "+" : "/"
 }
